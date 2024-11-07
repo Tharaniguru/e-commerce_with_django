@@ -8,6 +8,11 @@ import SignupScreen from './components/screen/SignupScreen';
 import LoginScreen from './components/screen/LoginScreen';
 import CartScreen from './components/screen/CartScreen';
 import Recommendation from './components/screen/Recommendation';
+// import Product from './components/products';
+import ProductScreen from './components/screen/ProductScreen';
+
+
+
 
 function App() {
   return (
@@ -21,6 +26,8 @@ function App() {
             <Route exact path="/signup" element={<SignupScreen />} />
             <Route exact path="/profile/recommendations" element={<Recommendation />} />
             <Route exact path="/cart" element={<CartScreen />} />
+            <Route exact path="/product/:id" element={<ProductScreen />} />
+            
           </Routes>
         </Container>
         <Footer />
