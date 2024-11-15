@@ -1,0 +1,46 @@
+{% extends 'shop/layouts/main.html' %}
+{% load static %}
+{% block title %}
+STSmart | {{ subcategory_name }} Products
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+<section class="bg-light py-4 my-5" style="min-height:600px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mb-3">{{ subcategory_name }} Products</h4>
+        <hr style="border-color:#b8bfc2;">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'collections' %}">Collection</a></li>
+            {% comment %} <li class="breadcrumb-item"><a href="{% url 'collectionsview' subcategory_name %}">{{subcategory_name}}</a></li> {% endcomment %}
+            <li class="breadcrumb-item active">{{ subcategory_name }}</li>
+          </ol>
+        </nav>
+        {% include 'shop/inc/message.html' %}
+      </div>
+      {% for item in products %}
+      <div class="col-md-4 col-lg-3">
+        <div class="card my-3 product-card">
+          <div class="product-image-container">
+            <img src="{{ item.product_image.url }}" class="card-img-top product-image" alt="Product Image">
+          </div>
+          <div class="card-body">
+            <a href="{% url 'product_details' cname=subcategory_name pname=item.name %}">
+              <h5 class="card-title text-primary">{{ item.name }}</h5>
+            </a>
+            <p class="card-text">
+              <span class="float-start old_price"><s>Rs.{{ item.original_price|floatformat:0 }}</s></span>
+              <span class="float-end new_price">Rs.{{ item.selling_price|floatformat:0 }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock content %}

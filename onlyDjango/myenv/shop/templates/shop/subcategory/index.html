@@ -1,0 +1,70 @@
+{% extends 'shop/layouts/main.html' %}
+{% load static %}
+{% block title %}
+STSmart | Online Shopping
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/card1.css' %}">
+<section class="bg-light py-4 my-5" style="min-height:600px;">
+    <div class="container">
+        <!-- Category Section -->
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-3 text-center">Subcategories</h4>
+                <hr style="border-color: #b8bfc2;">
+            </div>
+        </div>
+        {% comment %} <div class="row">
+            {% for item in catagory %}
+            <div class="col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+                <div class="card">
+                    <div class="bg">
+                        {% if item.sub_image %}
+                            <img src="{{ item.sub_image.url }}" class="card-img-top" alt="Category Image">
+                        {% else %}
+                            <img src="{% static 'img1.avif' %}" class="card-img-top" alt="Default Image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="card-text">{{ item.description|truncatewords:20 }}</p>
+                            <a href="{% url 'collectionsview' item.name %}" class="btn btn-primary">More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>No categories found.</p>
+            {% endfor %}
+        </div> {% endcomment %}
+
+        <!-- Products Section (when a category is selected) -->
+        {% comment %} {% if subcatagory %} {% endcomment %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h4 class="mb-3">{{ subcatagory_name }} Products</h4>
+                <hr style="border-color:#b8bfc2;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'collections' %}">Collection</a></li>
+                        <li class="breadcrumb-item active">{{ subcatagory_name }} </li>
+                    </ol>
+                </nav>
+            </div>
+            {% if subcatagory %}
+            {% for item in subcatagory %}
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card my-3">
+                    <img src="{{ item.sub_image.url }}" class="card-image-top" alt="Product Image">
+                    <div class="card-body">
+                      <a href="{% url 'product' item.name %}" ><h5 class="card-title text-primary">{{ item.name }}</h5></a>
+                        <!-- Optional pricing or details can be added here -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}

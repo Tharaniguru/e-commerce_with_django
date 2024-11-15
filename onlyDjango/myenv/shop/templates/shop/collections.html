@@ -1,0 +1,47 @@
+{% extends 'shop/layouts/main.html' %}
+{% load static %}
+{% block title %}
+STSmart | Categories
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/card1.css' %}">
+<section class="bg-light py-4 my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-3 text-center">Categories</h4>
+                <hr style="border-color: #b8bfc2;">
+                {% include 'shop/inc/message.html' %}
+            </div>
+        </div>
+        <div class="row">
+            {% for item in catagory %}
+            <div class="col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+                    <div class="card">
+                    <div class="bg">{% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="img">
+                    {% else %}
+                        <img src="{% static 'images/default-image.jpg' %}" class="card-img-top" alt="default image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description|truncatewords:20 }}</p>
+                         <a href="{% url 'collectionsview' item.name %}" class="btn btn-primary">View All</a> 
+                    </div>
+                </div>
+                    <div class="blob"></div>
+                    </div>
+
+                    
+
+                    
+                
+            </div>
+            {% empty %}
+                <p>No categories found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;700&display=swap');
+
+html {
+  font-size: 14px;
+}
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+a {
+  text-decoration: none;
+}
+
+.carousel-item img {
+  object-fit: cover;
+  object-position: top;
+  height: 60vh;
+  overflow: hidden;
+}
+
+.old_price {
+  font-weight: bold;
+  color: red;
+}
+
+.new_price {
+  font-weight: bold;
+  background-color: green;
+  color: white;
+  padding: 2px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+}
+
+.pic-box {
+  position: relative;
+}
+
+.hot {
+  background-color: orangered;
+  color: white;
+  width: 80px;
+  text-align: center;
+  font-weight: bold;
+  display: inline;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  right: 20px;
+  z-index: 10;
+}
+
+
+
+/* Ensure all product cards have the same size */
+.product-card {
+  min-height: 400px; /* Adjust this value based on your content needs */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Ensure the image container has a fixed height */
+.product-image-container {
+  height: 250px; /* Adjust this value to match the desired image size */
+  overflow: hidden; /* Hide overflow to keep images consistent */
+}
+
+/* Ensure images are scaled properly to fit */
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This scales the image without stretching */
+}
+
+/* Make sure the card body content remains consistent */
+.card-body {
+  min-height: 120px; /* Ensures consistent height for product details */
+}
+
+
+
+/* CSS for the zoom overlay */
+.zoom-overlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* High z-index to be on top of everything */
+}
+
+.close-zoom {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+.zoomed-image {
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.zoom-img {
+  cursor: zoom-in; /* Change cursor to indicate zoom capability */
+}
