@@ -9,3 +9,12 @@ from .models import *
 admin.site.register(Catagory)
 admin.site.register(Product)
 admin.site.register(Subcatagory)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'first_name', 'last_name', 'phone_number', 'email']
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'amount', 'payment_date', 'payment_id']

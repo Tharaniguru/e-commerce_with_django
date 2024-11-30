@@ -72,3 +72,27 @@ class UserPreferences(models.Model):
     product_1 = models.ForeignKey(Product, related_name='product_1', on_delete=models.SET_NULL, null=True, blank=True)
     product_2 = models.ForeignKey(Product, related_name='product_2', on_delete=models.SET_NULL, null=True, blank=True)
     product_3 = models.ForeignKey(Product, related_name='product_3', on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)  # Add address field
+
+
+
+    def __str__(self):
+        return self.user.username
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    payment_date = models.DateTimeField(auto_now_add=True)
+    payment_id = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return f"Payment {self.payment_id} by {self.user.username}"

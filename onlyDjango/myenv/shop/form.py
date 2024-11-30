@@ -1,8 +1,8 @@
 from pyexpat import model
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+
 from django import forms
-from .models import UserPreferences
+from .models import *
  
 class CustomUserForm(UserCreationForm):
   username=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter User Name'}))
@@ -12,6 +12,18 @@ class CustomUserForm(UserCreationForm):
   class Meta:
    model=User
    fields=['username','email','password1','password2']
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['first_name', 'last_name', 'birth_date', 'phone_number', 'email']
+
+    birth_date = forms.DateField(
+        widget=forms.TextInput(attrs={'type': 'date'}),
+        input_formats=['%Y-%m-%d', '%d-%m-%Y'],  # Accept both formats
+        required=False,  # Allow empty dates if not mandatory
+    )
 
 
 class UserPreferencesForm(forms.ModelForm):

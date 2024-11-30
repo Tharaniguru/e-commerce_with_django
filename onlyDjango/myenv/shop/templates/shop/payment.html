@@ -1,0 +1,73 @@
+{% extends 'shop/layouts/main.html' %}
+{% block title %}
+  Registration | STSmart
+{% endblock title %}
+{% block content %}
+
+<section class="bg-light py-4 my-5" style="min-height:600px;">
+  <div class="container">
+    <!-- Center the card using Bootstrap grid and utilities -->
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm border-0">
+          <!-- Card header with color -->
+          <div class="card-header text-white bg-primary text-center">
+            <h5 class="mb-0">Payment Information</h5>
+          </div>
+          <div class="card-body">
+            <!-- Total amount display -->
+            <div class="text-center mb-3">
+              <p><b>Total Amount to Pay:</b></p>
+              <h3 class="text-primary" style="font-size: 36px;">$ {{ total_amount | stringformat:'d' }}</h3>
+            </div>
+            
+            <!-- PayPal Button container (Centered) -->
+            <div id="paypal-button-container" class="d-flex justify-content-center align-items-center">
+              <!-- Include the PayPal JavaScript SDK -->
+              <script src="https://www.paypal.com/sdk/js?client-id=ATLksrz5CFeRlpI7JVSSG3zmTDfxIa5GRChhE05LxB_3rC3N2QcHOIG_Hi9WsqOEmvsCcBdDxJmpGAoj&currency=USD"></script>
+
+              <script>
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+                // Set up the transaction
+                createOrder: function (data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '{{total_amount}}' // Amount in USD
+                            }
+                        }]
+                    }).catch(function (err) {
+                        console.error("CreateOrder Error:", err);
+                        alert("Error creating the order.");
+                    });
+                },
+            
+                // Finalize the transaction
+                onApprove: function (data, actions) {
+                    return actions.order.capture().then(function (details) {
+                        alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                    }).catch(function (err) {
+                        console.error("Capture Error:", err);
+                        alert("Error capturing the transaction.");
+                    });
+                },
+            
+                // Handle errors
+                onError: function (err) {
+                    console.error("PayPal Error:", err);
+                    alert("An error occurred during the PayPal transaction.");
+                }
+            }).render('#paypal-button-container');
+            
+    </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

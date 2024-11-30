@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate,login,logout
 import json
 from django.shortcuts import render, redirect
 from .models import UserPreferences, Product
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 
 def index(request):
@@ -108,12 +110,21 @@ def remove_fav(request,fid):
   return redirect("/favviewpage")
  
 
+from django.db.models import Sum, F
+
 def cart_page(request):
-  if request.user.is_authenticated:
-    cart=Cart.objects.filter(user=request.user)
-    return render(request,"shop/cart.html",{"cart":cart})
-  else:
-    return redirect("/")
+    if request.user.is_authenticated:
+        # Fetch the cart items for the authenticated user
+        cart = Cart.objects.filter(user=request.user)
+
+        # Calculate the total amount for the cart
+        total_amount = cart.aggregate(total=Sum(F('product_qty') * F('product__selling_price')))['total'] or 0
+
+        # Pass cart items and total amount to the template
+        return render(request, "shop/cart.html", {"cart": cart, "total_amount": total_amount})
+    else:
+        return redirect("/")
+
  
 def remove_cart(request,cid):
   cartitem=Cart.objects.get(id=cid)
@@ -176,23 +187,54 @@ def search_results(request):
     return render(request, 'shop/search_results.html', {'products': products, 'query': query})
 
 
-
-
+@login_required
 def profile_view(request):
-    user_preferences, created = UserPreferences.objects.get_or_create(user=request.user)
+    """Displays and updates the profile of the logged-in user."""
+    try:
+        # Fetch or create the user's profile
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        
+        if request.method == "POST":
+            # Update profile fields from POST data
+            profile.first_name = request.POST.get('first_name', profile.first_name)
+            profile.last_name = request.POST.get('last_name', profile.last_name)
+            profile.address = request.POST.get('address', profile.address)
+            profile.birth_date = request.POST.get('birth_date', profile.birth_date)
+            profile.phone_number = request.POST.get('phone_number', profile.phone_number)
+            profile.email = request.POST.get('email', profile.email)
+            profile.save()
+            
+            # Notify the user of the successful update
+            messages.success(request, "Profile updated successfully.")
+            return redirect('profile_view')
 
-    if request.method == 'POST':
-        form = UserPreferencesForm(request.POST, instance=user_preferences)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')  # Redirect to the profile page or wherever needed
-    else:
-        form = UserPreferencesForm(instance=user_preferences)
+        # Render the profile template with the user's profile
+        return render(request, 'shop/profile.html', {"profile": profile})
 
-    context = {
-        'form': form,
-    }
-    return render(request, 'shop/profile.html')
+    except Exception as e:
+        # Handle any unexpected errors
+        messages.error(request, f"An error occurred: {str(e)}")
+        return redirect('home')
+
+@login_required
+def payment(request):
+    if request.method == "POST":
+        # Simulating a successful payment
+        payment_id = request.POST.get('payment_id')
+        total_amount = request.POST.get('amount')
+
+        Payment.objects.create(
+            user=request.user,
+            amount=total_amount,
+            payment_id=payment_id
+        )
+        messages.success(request, "Payment processed successfully.")
+        return redirect('cart')
+
+    cart = Cart.objects.filter(user=request.user)
+    total_amount = cart.aggregate(total=Sum(F('product_qty') * F('product__selling_price')))['total'] or 0
+    return render(request, "shop/payment.html", {"total_amount": total_amount})
+
 
 
 def home_view(request):
@@ -216,3 +258,17 @@ def home_view(request):
     }
     
     return render(request, 'home.html', context)
+
+
+def payment(request):
+    if request.user.is_authenticated:
+        # Calculate the total amount from the cart
+        cart = Cart.objects.filter(user=request.user)
+        total_amount = cart.aggregate(total=Sum(F('product_qty') * F('product__selling_price')))['total'] or 0
+
+        # Pass the total amount to the payment template
+        return render(request, "shop/payment.html", {"total_amount": total_amount})
+    else:
+        return redirect("/")
+
+
